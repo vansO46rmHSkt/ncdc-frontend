@@ -4,7 +4,7 @@ import { type ComponentPropsWithoutRef } from 'react';
 const commonStyles =
   'cursor-pointer rounded font-bold h-full w-full disabled:cursor-not-allowed';
 
-const vairantStyles = {
+const variantStyles = {
   primary: 'bg-light-blue text-white hover:bg-[#3C8EC4] active:bg-[#347CAB]',
   secondary: 'bg-black-30 text-white hover:bg-[#999999] active:bg-[#808080]',
   outlined:
@@ -12,7 +12,7 @@ const vairantStyles = {
 } as const;
 
 export interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
-  variant?: keyof typeof vairantStyles;
+  variant?: keyof typeof variantStyles;
 }
 
 const Button = (props: ButtonProps) => {
@@ -29,7 +29,7 @@ const Button = (props: ButtonProps) => {
       className={`h-10 w-22.5 min-w-10 ${disabled && 'bg-white opacity-30'}`}
     >
       <button
-        className={clsx(commonStyles, vairantStyles[variant], className)}
+        className={clsx(commonStyles, variantStyles[variant], className)}
         disabled={disabled}
         {...restProps}
       >
