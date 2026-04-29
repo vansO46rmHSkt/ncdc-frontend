@@ -6,7 +6,7 @@ import Textarea from '@/components/ui/input/Textarea';
 import TextField from '@/components/ui/input/TextField';
 import Loading from '@/components/ui/loading/Loading';
 import { useContent } from '@/features/content/hooks/useContent';
-import { Suspense, useReducer, useRef, useState } from 'react';
+import { Suspense, useCallback, useReducer, useRef, useState } from 'react';
 
 const SaveCancelButtonSet = ({
   onCancel,
@@ -17,11 +17,11 @@ const SaveCancelButtonSet = ({
 }) => {
   const [canSave, setCanSave] = useState(true);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     setCanSave(false);
     await onSave();
     setCanSave(true);
-  };
+  }, [onSave]);
 
   return (
     <div className="flex w-22.5 justify-between gap-2.5">

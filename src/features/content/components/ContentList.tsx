@@ -2,7 +2,7 @@ import NewPageButton from '@/components/ui/button/NewPageButton';
 import DoneButton from '@/components/ui/button/DoneButton';
 import EditButton from '@/components/ui/button/EditButton';
 import { useContents } from '@/features/content/hooks/useContents';
-import { Suspense, useReducer, useState } from 'react';
+import { Suspense, useCallback, useReducer, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router';
 import DeleteIconButton from '@/components/ui/button/DeleteIconButton';
 import ErrorBoundary from '@/app/ErrorBoundary';
@@ -15,11 +15,11 @@ const DeleteIconButtonWrapper = ({
 }) => {
   const [canDelete, setCanDelete] = useState(true);
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     setCanDelete(false);
     await onClick();
     setCanDelete(true);
-  };
+  }, [onClick]);
 
   return <DeleteIconButton disabled={!canDelete} onClick={handleDelete} />;
 };
@@ -31,11 +31,11 @@ const NewPageButtonWrapper = ({
 }) => {
   const [canAdd, setCanAdd] = useState(true);
 
-  const handleAdd = async () => {
+  const handleAdd = useCallback(async () => {
     setCanAdd(false);
     await onClick();
     setCanAdd(true);
-  };
+  }, [onClick]);
 
   return <NewPageButton disabled={!canAdd} onClick={handleAdd} />;
 };
@@ -47,17 +47,20 @@ const ContentListInner = () => {
   const { contents, add, remove } = useContents();
   const [canEdit, toggleCanEdit] = useReducer((prev) => !prev, false);
 
-  const handleDelete = async (id: number) => {
-    await remove(id);
-    if (contentId && id === parseInt(contentId)) {
-      navigate('/content');
-    }
-  };
+  const handleDelete = useCallback(
+    async (id: number) => {
+      await remove(id);
+      if (contentId && id === parseInt(contentId)) {
+        navigate('/content');
+      }
+    },
+    [contentId, navigate, remove],
+  );
 
-  const handleAdd = async () => {
+  const handleAdd = useCallback(async () => {
     const result = await add();
     navigate(`/content/${result.id}`);
-  };
+  }, [add, navigate]);
 
   return (
     <div className="flex h-full min-h-0 w-70 flex-col">

@@ -1,7 +1,7 @@
 import { buildApiUrl, fetcher } from '@/lib/api';
 import useSWR, { useSWRConfig } from 'swr';
 import type { Content } from './Content';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { apiKey as contentApiKey } from './useContents';
 
 const buildApiKey = (id: number) => buildApiUrl(`content/${id}`);
@@ -38,85 +38,94 @@ export const useContent = (id: number) => {
     body: undefined,
   });
 
-  const validate = (target: InputTarget): boolean => {
-    const valueLength = inputValues[target].length;
-    switch (target) {
-      case 'title': {
-        if (valueLength < 1) {
+  const validate = useCallback(
+    (target: InputTarget): boolean => {
+      const valueLength = inputValues[target].length;
+      switch (target) {
+        case 'title': {
+          if (valueLength < 1) {
+            setErrors((prev) => ({
+              ...prev,
+              title: 'タイトルは1文字以上で入力してください',
+            }));
+            return false;
+          }
+          if (valueLength > 50) {
+            setErrors((prev) => ({
+              ...prev,
+              title: 'タイトルは50文字以内で入力してください',
+            }));
+            return false;
+          }
           setErrors((prev) => ({
             ...prev,
-            title: 'タイトルは1文字以上で入力してください',
+            title: undefined,
           }));
-          return false;
+          return true;
         }
-        if (valueLength > 50) {
+        case 'body': {
+          if (valueLength < 10) {
+            setErrors((prev) => ({
+              ...prev,
+              body: '本文は10文字以上で入力してください',
+            }));
+            return false;
+          }
+          if (valueLength > 2000) {
+            setErrors((prev) => ({
+              ...prev,
+              body: '本文は2000文字以内で入力してください',
+            }));
+            return false;
+          }
           setErrors((prev) => ({
             ...prev,
-            title: 'タイトルは50文字以内で入力してください',
+            body: undefined,
           }));
+          return true;
+        }
+        default: {
+          target satisfies never;
           return false;
         }
-        setErrors((prev) => ({
-          ...prev,
-          title: undefined,
-        }));
-        return true;
       }
-      case 'body': {
-        if (valueLength < 10) {
-          setErrors((prev) => ({
-            ...prev,
-            body: '本文は10文字以上で入力してください',
-          }));
-          return false;
-        }
-        if (valueLength > 2000) {
-          setErrors((prev) => ({
-            ...prev,
-            body: '本文は2000文字以内で入力してください',
-          }));
-          return false;
-        }
-        setErrors((prev) => ({
-          ...prev,
-          body: undefined,
-        }));
-        return true;
-      }
-      default: {
-        target satisfies never;
+    },
+    [inputValues],
+  );
+
+  const cancel = useCallback(
+    (target: InputTarget) => {
+      setInputValues((prev) => ({ ...prev, [target]: data[target] ?? '' }));
+      setErrors((prev) => ({
+        ...prev,
+        [target]: undefined,
+      }));
+    },
+    [data],
+  );
+
+  const change = useCallback((target: InputTarget, value: string) => {
+    setInputValues((prev) => ({ ...prev, [target]: value }));
+  }, []);
+
+  const update = useCallback(
+    async (target: InputTarget): Promise<boolean> => {
+      if (!validate(target)) {
         return false;
       }
-    }
-  };
 
-  const cancel = (target: InputTarget) => {
-    setInputValues((prev) => ({ ...prev, [target]: data[target] ?? '' }));
-    setErrors((prev) => ({
-      ...prev,
-      [target]: undefined,
-    }));
-  };
+      const result = await fetch(apiKey, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [target]: inputValues[target] }),
+      });
 
-  const change = (target: InputTarget, value: string) => {
-    setInputValues((prev) => ({ ...prev, [target]: value }));
-  };
+      await Promise.all([mutate(apiKey, result.json()), mutate(contentApiKey)]);
 
-  const update = async (target: InputTarget): Promise<boolean> => {
-    if (!validate(target)) {
-      return false;
-    }
-
-    const result = await fetch(apiKey, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ [target]: inputValues[target] }),
-    });
-
-    await Promise.all([mutate(apiKey, result.json()), mutate(contentApiKey)]);
-
-    return true;
-  };
+      return true;
+    },
+    [apiKey, inputValues, mutate, validate],
+  );
 
   return {
     content: data,
