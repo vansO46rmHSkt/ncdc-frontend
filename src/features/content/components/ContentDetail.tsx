@@ -5,7 +5,7 @@ import SaveButton from '@/components/ui/button/SaveButton';
 import Textarea from '@/components/ui/input/Textarea';
 import TextField from '@/components/ui/input/TextField';
 import Loading from '@/components/ui/loading/Loading';
-import { useContent } from '@/features/contents/hooks/useContent';
+import { useContent } from '@/features/content/hooks/useContent';
 import { Suspense, useReducer, useRef, useState } from 'react';
 
 const SaveCancelButtonSet = ({
@@ -57,7 +57,7 @@ const TitleArea = ({
             name="title"
             inputRef={inputRef}
             placeholder="タイトルを入力してください"
-            className="text-title font-bold"
+            className="text-title h-10 font-bold"
             error={!!error}
             helperText={error}
             value={inputValue}

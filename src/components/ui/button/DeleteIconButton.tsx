@@ -8,6 +8,7 @@ const DeleteIconButton = (
   return (
     <div className={`${disabled && 'bg-white opacity-30'}`}>
       <button
+        title="削除"
         className="cursor-pointer rounded hover:bg-[#E6E6E6] active:bg-[#CCCCCC] disabled:cursor-not-allowed"
         disabled={disabled}
         {...restProps}

@@ -24,7 +24,7 @@ const Textarea = (
     ...restProps
   } = props;
   return (
-    <div>
+    <>
       <textarea
         className={clsx(
           commonStyles,
@@ -36,11 +36,11 @@ const Textarea = (
         {...restProps}
       />
       {helperText && (
-        <span className={`text-caption ${error && 'text-pink-600'}`}>
+        <p className={`text-caption mx-7.5 mt-1 ${error && 'text-pink-600'}`}>
           {helperText}
-        </span>
+        </p>
       )}
-    </div>
+    </>
   );
 };
 

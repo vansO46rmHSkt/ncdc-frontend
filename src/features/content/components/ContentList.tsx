@@ -1,7 +1,7 @@
 import NewPageButton from '@/components/ui/button/NewPageButton';
 import DoneButton from '@/components/ui/button/DoneButton';
 import EditButton from '@/components/ui/button/EditButton';
-import { useContents } from '@/features/contents/hooks/useContents';
+import { useContents } from '@/features/content/hooks/useContents';
 import { Suspense, useReducer, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router';
 import DeleteIconButton from '@/components/ui/button/DeleteIconButton';
@@ -37,7 +37,7 @@ const NewPageButtonWrapper = ({
     setCanAdd(true);
   };
 
-  return <NewPageButton onClick={handleAdd} disabled={!canAdd} />;
+  return <NewPageButton disabled={!canAdd} onClick={handleAdd} />;
 };
 
 const ContentListInner = () => {

@@ -2,7 +2,7 @@ import { buildApiUrl, fetcher } from '@/lib/api';
 import useSWR, { useSWRConfig } from 'swr';
 import type { Content } from './Content';
 import { useState } from 'react';
-import { apiKey as contentsApiKey } from './useContents';
+import { apiKey as contentApiKey } from './useContents';
 
 const buildApiKey = (id: number) => buildApiUrl(`content/${id}`);
 
@@ -20,9 +20,11 @@ type InputTarget = keyof InputValues;
 export const useContent = (id: number) => {
   const apiKey = buildApiKey(id);
   const { mutate } = useSWRConfig();
+
   const { data } = useSWR(apiKey, fetcher<Content>, {
     suspense: true,
   });
+
   const [inputValues, setInputValues] = useState<{
     title: string;
     body: string;
@@ -30,6 +32,7 @@ export const useContent = (id: number) => {
     title: data.title ?? '',
     body: data.body ?? '',
   });
+
   const [errors, setErrors] = useState<Errors>({
     title: undefined,
     body: undefined,
@@ -91,7 +94,7 @@ export const useContent = (id: number) => {
     setInputValues((prev) => ({ ...prev, [target]: data[target] ?? '' }));
     setErrors((prev) => ({
       ...prev,
-      target: undefined,
+      [target]: undefined,
     }));
   };
 
@@ -110,7 +113,7 @@ export const useContent = (id: number) => {
       body: JSON.stringify({ [target]: inputValues[target] }),
     });
 
-    await Promise.all([mutate(apiKey, result.json()), mutate(contentsApiKey)]);
+    await Promise.all([mutate(apiKey, result.json()), mutate(contentApiKey)]);
 
     return true;
   };

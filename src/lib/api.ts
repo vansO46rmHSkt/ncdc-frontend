@@ -1,5 +1,5 @@
-export const buildApiUrl = (url: string) => {
-  return `${import.meta.env.VITE_BASE_URL}/${url}`;
+export const buildApiUrl = (path: string) => {
+  return `${import.meta.env.VITE_BASE_URL}/${path}`;
 };
 
 export const fetcher = <T>(...args: Parameters<typeof fetch>) =>

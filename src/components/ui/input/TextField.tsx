@@ -24,7 +24,7 @@ const TextField = (
     ...restProps
   } = props;
   return (
-    <div>
+    <>
       <input
         className={clsx(
           commonStyles,
@@ -35,12 +35,12 @@ const TextField = (
         ref={inputRef}
         {...restProps}
       />
-      <p
-        className={`text-caption flex min-h-6 items-center ${error && 'text-pink-600'}`}
-      >
-        {helperText}
-      </p>
-    </div>
+      {helperText && (
+        <p className={`text-caption mx-7.5 mt-1 ${error && 'text-pink-600'}`}>
+          {helperText}
+        </p>
+      )}
+    </>
   );
 };
 

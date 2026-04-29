@@ -1,7 +1,7 @@
-import ContentDetail from '@/features/contents/components/ContentDetail';
+import ContentDetail from '@/features/content/components/ContentDetail';
 import { useParams } from 'react-router';
 
-const Main = () => {
+const EditPage = () => {
   const { contentId } = useParams();
 
   return (
@@ -19,4 +19,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default EditPage;

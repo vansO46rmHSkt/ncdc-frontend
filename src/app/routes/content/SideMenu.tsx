@@ -1,5 +1,5 @@
 import logo from '@/assets/logo.svg';
-import ContentList from '@/features/contents/components/ContentList';
+import ContentList from '@/features/content/components/ContentList';
 import { NavLink } from 'react-router';
 
 const SideMenu = () => {
